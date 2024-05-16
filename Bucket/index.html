@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Liste des Images</title>
+</head>
+<body>
+  <h1>Liste des Images dans le Bucket</h1>
+  <div id="image-list"></div>
+
+  <script>
+    
+    const projectId = 'bucket-project-410808';
+    const bucketName = projectId + '-test';
+
+    fetch(`https://storage.googleapis.com/storage/v1/b/${bucketName}/o?project=${projectId}`)
+      .then(response => response.json())
+      .then(data => {
+        const imageList = document.getElementById('image-list');
+
+        data.items.forEach(item => {
+          if (item.contentType && item.contentType.startsWith('image/')) {
+            const imageUrl = `https://storage.googleapis.com/${bucketName}/${item.name}`;
+            const imageElement = document.createElement('img');
+            imageElement.src = imageUrl;
+            imageElement.style.maxWidth = '300px'; // Définissez une largeur maximale pour les images
+            imageList.appendChild(imageElement);
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Une erreur s\'est produite : ', error);
+      });
+  </script>
+</body>
+</html>
